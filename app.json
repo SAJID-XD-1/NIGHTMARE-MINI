@@ -1,0 +1,16 @@
+{
+  "name": "NIGHTMARE-MINI",
+  "description": "NIGHTMARE-MD MINI WhatsApp Bot with pairing dashboard",
+  "keywords": ["node", "whatsapp", "bot", "nightmare"],
+  "stack": "heroku-24",
+  "buildpacks": [{ "url": "heroku/nodejs" }],
+  "env": {
+    "MONGODB_URI": { "description": "MongoDB Atlas connection string (session + settings yahin save hongi)", "required": true },
+    "OWNER_NUMBER": { "description": "Aapka number country code ke saath, bina + ke (923xxxxxxxxx)", "required": true },
+    "OWNER_NAME": { "description": "Owner ka naam", "value": "Hajsajd", "required": false },
+    "BOT_NAME": { "description": "Bot ka naam", "value": "NIGHTMARE-MINI", "required": false },
+    "PREFIX": { "description": "Command prefix", "value": ".", "required": false },
+    "MODE": { "description": "public ya private", "value": "public", "required": false }
+  },
+  "formation": { "web": { "quantity": 1, "size": "basic" } }
+}

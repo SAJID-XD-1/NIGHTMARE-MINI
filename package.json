@@ -1,0 +1,23 @@
+{
+  "name": "nightmare-mini",
+  "version": "2.0.0",
+  "description": "NIGHTMARE-MD MINI WhatsApp Bot",
+  "main": "index.js",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@whiskeysockets/baileys": "^6.7.18",
+    "axios": "^1.7.9",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3",
+    "fluent-ffmpeg": "^2.1.2",
+    "mongoose": "^8.24.7",
+    "pino": "^9.14.0",
+    "yt-search": "^2.12.1"
+  }
+}
