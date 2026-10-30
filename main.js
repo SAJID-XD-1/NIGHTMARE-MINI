@@ -29,8 +29,10 @@ let starting = false;
 function loadPlugins() {
   const folder = path.join(__dirname, 'plugins');
   if (!fs.existsSync(folder)) return;
+
   for (const file of fs.readdirSync(folder)) {
     if (!file.endsWith('.js') || file.startsWith('_')) continue;
+
     try {
       require(path.join(folder, file));
       console.log(`🔌 Plugin loaded: ${file}`);
@@ -38,26 +40,38 @@ function loadPlugins() {
       console.error(`❌ Plugin load FAILED (${file}):`, e.message);
     }
   }
+
   console.log(`📦 Total commands: ${commands.length}`);
 }
+
 loadPlugins();
 
 /* ---------- Pairing (website se) ---------- */
 botEvents.on('requestPairing', async (phoneNumber, callback) => {
   try {
-    if (!sock) throw new Error('Bot abhi start ho raha hai, 10 second baad dobara try karein.');
+    if (!sock) {
+      throw new Error('Bot abhi start ho raha hai, 10 second baad dobara try karein.');
+    }
+
     if (sock.authState.creds.registered) {
       throw new Error('Ye bot pehle se paired hai. Naya pair karna ho to "session" folder delete karke restart karein.');
     }
 
-    for (let i = 0; i < 15 && !isSockReady; i++) await new Promise((r) => setTimeout(r, 1000));
-    if (!isSockReady) throw new Error('WhatsApp connection nahi ban raha. Internet check karke server restart karein.');
+    for (let i = 0; i < 15 && !isSockReady; i++) {
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
+    if (!isSockReady) {
+      throw new Error('WhatsApp connection nahi ban raha. Internet check karke server restart karein.');
+    }
 
     const clean = String(phoneNumber).replace(/\D/g, '');
     const raw = await sock.requestPairingCode(clean);
     const code = raw.match(/.{1,4}/g)?.join('-') || raw;
+
     console.log(`🔑 Pairing code generated for ${clean}`);
     callback(null, code);
+
   } catch (error) {
     callback(error.message || String(error));
   }
@@ -66,6 +80,7 @@ botEvents.on('requestPairing', async (phoneNumber, callback) => {
 /* ---------- Bot ---------- */
 async function startBot() {
   if (starting) return;
+
   starting = true;
   isSockReady = false;
 
@@ -76,6 +91,7 @@ async function startBot() {
     const { state, saveCreds } = await getAuthState();
 
     let version;
+
     try {
       ({ version } = await fetchLatestBaileysVersion());
     } catch {
@@ -89,14 +105,20 @@ async function startBot() {
       auth: state,
       browser: Browsers.macOS('Chrome')
     });
+
     sock = s;
 
     s.ev.on('creds.update', saveCreds);
 
     // Naye (unregistered) session ke liye 4 sec baad pairing ready maan lo
-    if (!state.creds.registered) setTimeout(() => { if (sock === s) isSockReady = true; }, 4000);
+    if (!state.creds.registered) {
+      setTimeout(() => {
+        if (sock === s) isSockReady = true;
+      }, 4000);
+    }
 
     s.ev.on('connection.update', ({ connection, lastDisconnect, qr }) => {
+
       if (qr) {
         isSockReady = true;
         console.log('📡 Socket pairing ke liye ready hai!');
@@ -104,46 +126,85 @@ async function startBot() {
 
       if (connection === 'close') {
         isSockReady = false;
+
         const code = lastDisconnect?.error?.output?.statusCode;
         console.log(`🔌 Connection closed (code: ${code})`);
 
-        if (code === DisconnectReason.loggedOut || code === DisconnectReason.badSession) {
+        if (
+          code === DisconnectReason.loggedOut ||
+          code === DisconnectReason.badSession
+        ) {
           console.log('🗑️ Session invalid hai, delete karke dobara start kar raha hoon...');
           clearAuth().finally(() => setTimeout(startBot, 3000));
           return;
         }
+
         setTimeout(startBot, 3000);
+
       } else if (connection === 'open') {
+
         console.log('\n✅ WhatsApp Bot Successfully Connected! 🇦🇱🕷️\n');
-        if (config.AUTO_BIO === 'true') autobio.start(s);
-        const ownerJid = `${config.OWNER_NUMBER}@s.whatsapp.net`;
-        s.sendMessage(ownerJid, {
-          text: box('ᴄᴏɴɴᴇᴄᴛᴇᴅ', [['⛧', 'Status', 'ᴏɴʟɪɴᴇ'], ['🥀', 'Bot', config.BOT_NAME], ['🖤', 'Prefix', config.PREFIX], ['📦', 'Commands', commands.length]])
+
+        if (config.AUTO_BIO === 'true') {
+          autobio.start(s);
+        }
+
+        // ---------- CONNECTED MESSAGE ----------
+        const botNumber = (s.user?.id || '').split(':')[0];
+        const botJid = `${botNumber}@s.whatsapp.net`;
+
+        s.sendMessage(botJid, {
+          text: `×̥°〔 Bᴏᴛ Cᴏɴɴᴇᴄᴛᴇᴅ〕°×̥*
+                    
+   *᭝⌯* ָ࣪ —  Bᴏᴛ Nᴀᴍᴇ  *:* *NIGHTMARE MINI 🇦🇱🕷️*
+   *᭝⌯* ָ࣪ —   Pʀᴇꜰɪx        *:* ${config.PREFIX}
+   *᭝⌯* ָ࣪ —  Cᴏᴍᴍᴀɴᴅꜱ *:* ${commands.length}
+   
+  ᭝⌯ ָ࣪Pᴏᴡᴇʀᴅ ʙʏ *:* *SAJID ALI*
+                    *¯͞⎻⼼͞⎽᚛💀᚜⎽͞⼼͞*`
         }).catch(() => {});
       }
     });
 
+    /* ---------- Anti Call ---------- */
     s.ev.on('call', async (calls) => {
       if (config.ANTI_CALL !== 'true') return;
+
       for (const call of calls) {
         if (call.status !== 'offer') continue;
+
         await s.rejectCall(call.id, call.from).catch(() => {});
-        await s.sendMessage(call.from, { text: '🕷️ Calls allowed nahi hain. Message kar dein. 🖤' }).catch(() => {});
+
+        await s.sendMessage(call.from, {
+          text: '🕷️ Calls allowed nahi hain. Message kar dein. 🖤'
+        }).catch(() => {});
       }
     });
 
-    s.ev.on('group-participants.update', (u) => groupEvents(s, u).catch((e) => console.error('groupEvents:', e.message)));
+    /* ---------- Group Events ---------- */
+    s.ev.on('group-participants.update', (u) => {
+      groupEvents(s, u).catch((e) =>
+        console.error('groupEvents:', e.message)
+      );
+    });
 
+    /* ---------- Messages ---------- */
     s.ev.on('messages.upsert', async ({ messages, type }) => {
       if (type !== 'notify') return;
+
       for (const msg of messages) {
-        try { await handleMessage(s, msg); }
-        catch (e) { console.error('❌ Handler error:', e); }
+        try {
+          await handleMessage(s, msg);
+        } catch (e) {
+          console.error('❌ Handler error:', e);
+        }
       }
     });
+
   } catch (e) {
     console.error('❌ startBot error:', e.message);
     setTimeout(startBot, 5000);
+
   } finally {
     starting = false;
   }
