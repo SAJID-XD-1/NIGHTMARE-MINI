@@ -1,6 +1,7 @@
 const { cmd } = require('../nightmare');
 const config = require('../config');
 const { runtime } = require('../lib/functions');
+const { smallCaps } = require('../lib/font');
 
 cmd({
     pattern: 'alive',
@@ -12,12 +13,12 @@ cmd({
 
     const text = `🇦🇱 NIGHTMARE 🕸️
 
-Hello ${pushname}
+${smallCaps(`Hello ${pushname}`)}
 
-Status : Online
-Mode : ${config.MODE}
-Prefix : ${config.PREFIX}
-Uptime : ${runtime(process.uptime())}
+${smallCaps('Status : Online')}
+${smallCaps(`Mode : ${config.MODE}`)}
+${smallCaps(`Prefix : ${config.PREFIX}`)}
+${smallCaps(`Uptime : ${runtime(process.uptime())}`)}
 
 🇦🇱 NIGHTMARE 🕸️`;
 
