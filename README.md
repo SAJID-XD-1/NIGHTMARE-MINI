@@ -1,21 +1,31 @@
+
 <div align="center">
 
-<h1>
-  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=900&size=38&duration=2500&pause=900&color=FF1238&center=true&vCenter=true&width=650&lines=NIGHTMARE+MINI+BOT" alt="NIGHTMARE MINI BOT" />
-</h1>
+<img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=900&size=42&duration=2500&pause=700&color=FF1744&center=true&vCenter=true&width=750&height=90&lines=NIGHTMARE+MINI+BOT;POWERED+BY+SAJID;ENTER+THE+DARK+SIDE" alt="NIGHTMARE MINI BOT"/>
 
-<br />
+<br>
 
-<div style="display:inline-block;padding:18px 42px;border-radius:16px;background:linear-gradient(145deg,#300008,#090909 55%,#650014);border:1px solid #ff1238;box-shadow:0 0 22px #ff123855,inset 0 0 18px #ff123822;">
-  <h2 style="margin:0;color:#ff1238;letter-spacing:5px;text-shadow:0 0 12px #ff1238;">NIGHTMARE MINI</h2>
-</div>
+<img src="https://capsule-render.vercel.app/api?type=venom&height=220&color=0:080808,40:39000B,75:990018,100:080808&text=NIGHTMARE&fontColor=FF243F&fontSize=65&fontAlignY=50&stroke=FF1744&strokeWidth=1&animation=fadeIn&desc=MINI%20BOT%20%7C%20POWERED%20BY%20SAJID&descAlignY=72&descSize=17" width="100%" alt="NIGHTMARE 3D Red Banner"/>
 
-<br /><br />
+<br>
 
-<img src="https://readme-typing-svg.demolab.com?font=Rajdhani&weight=700&size=20&duration=2800&pause=1000&color=FFFFFF&center=true&vCenter=true&width=650&lines=BUILT+IN+DARKNESS.+DEFINED+BY+POWER." alt="BUILT IN DARKNESS. DEFINED BY POWER." />
+<img src="https://img.shields.io/badge/NIGHTMARE-MINI-990018?style=for-the-badge&labelColor=080808&color=990018"/>
+<img src="https://img.shields.io/badge/POWERED-BY%20SAJID?style=for-the-badge&labelColor=080808&color=4A0010"/>
 
-<br /><br />
+<br><br>
 
-<strong>POWERED BY SAJID</strong>
+### 🕷️ `BUILT IN DARKNESS. DEFINED BY POWER.`
+
+<img src="https://readme-typing-svg.demolab.com?font=Share+Tech+Mono&size=19&duration=2200&pause=600&color=E6002E&center=true&vCenter=true&width=600&height=45&lines=NOT+JUST+ANOTHER+BOT.;SIMPLE.+SHARP.+UNSTOPPABLE.;WELCOME+TO+NIGHTMARE." alt="Animated tagline"/>
+
+<br>
+
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━━`
+
+**🕸️ NIGHTMARE MINI BOT**
+
+*POWERED BY SAJID*
+
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━━`
 
 </div>
