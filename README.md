@@ -1,41 +1,21 @@
-# NIGHTMARE-MINI 🇦🇱🕷️ v3.1
-Developer: **SAJID ALI** • WhatsApp bot (Baileys) • MongoDB session • pairing website
+<div align="center">
 
-## Access
-Sirf **Owner** aur **SUDO** commands chala sakte hain (public/private mode nahi hai).
-- Owner = `OWNER_NUMBER` ya bot ka paired account
-- `.addsudo 923XXXXXXXXX` • `.delsudo 923XXXXXXXXX` • `.listsudo` (sirf Owner)
-- Group commands par group-admin check pehle ki tarah rehta hai
-- Anti-link, anti-word, AFK jaise watchers normal members par bhi chalte hain
+<h1>
+  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=900&size=38&duration=2500&pause=900&color=FF1238&center=true&vCenter=true&width=650&lines=NIGHTMARE+MINI+BOT" alt="NIGHTMARE MINI BOT" />
+</h1>
 
-## Font
-Har response par global NIGHTMARE font (`lib/font.js`, `lib/fontwrap.js`). User ka apna text, AI jawab, forward aur status exempt hain:
-`reply(text, { noFont: true })` ya `sock.sendMessage(jid, content, { noFont: true })`.
+<br />
 
-## Chalane ka tareeqa
-1. `npm install`  2. `.env.example` → `.env` (`MONGODB_URI`, `OWNER_NUMBER`)  3. `npm start` → `http://localhost:8000` → pairing code
+<div style="display:inline-block;padding:18px 42px;border-radius:16px;background:linear-gradient(145deg,#300008,#090909 55%,#650014);border:1px solid #ff1238;box-shadow:0 0 22px #ff123855,inset 0 0 18px #ff123822;">
+  <h2 style="margin:0;color:#ff1238;letter-spacing:5px;text-shadow:0 0 12px #ff1238;">NIGHTMARE MINI</h2>
+</div>
 
-## Heroku
-Config Vars: `MONGODB_URI`, `OWNER_NUMBER` (+ optional `OWNER_NAME`, `PREFIX`, `TIMEZONE`, `SUDO`, `MENU_IMAGE`, AI keys). Dyno **Basic**.
-Session / settings / SUDO MongoDB mein save hote hain. Update: naye files GitHub par push → Deploy Branch.
+<br /><br />
 
-## Naya plugin
-`plugins/_template.js` copy karein. Sirf `cmd()` / `onMessage()` (`../nightmare`) use karein.
+<img src="https://readme-typing-svg.demolab.com?font=Rajdhani&weight=700&size=20&duration=2800&pause=1000&color=FFFFFF&center=true&vCenter=true&width=650&lines=BUILT+IN+DARKNESS.+DEFINED+BY+POWER." alt="BUILT IN DARKNESS. DEFINED BY POWER." />
 
-## Commands
-- **ai** (7): `ai` `dall` `gemini` `gpt` `groq` `lydia` `or`
-- **download** (6): `apk` `fb` `igdl` `play` `tiktok` `video`
-- **fun** (4): `dice` `flip` `joke` `say`
-- **game** (1): `tictactoe`
-- **general** (9): `afk` `alive` `font` `help` `list` `menu` `owner` `ping` `runtime`
-- **group** (31): `acceptall` `add` `admincheck` `common` `demote` `end` `ginfo` `goodbye` `gpp` `groupinfo` `hidetag` `inactive` `invite` `join` `kick` `kickall` `leave` `msgs` `mute` `poll` `promote` `rejectall` `removeadmins` `requestlist` `reset` `revoke` `tag` `tagall` `timemute` `unmute` `welcome`
-- **media** (19): `avec` `avm` `bass` `black` `compress` `crop` `cut` `histo` `low` `merge` `mp3` `photo` `pitch` `reverse` `rotate` `treble` `trim` `vector` `voice`
-- **owner** (14): `addsudo` `autobio` `delschedule` `delsudo` `gcss` `getschedule` `gstatus` `listsudo` `restart` `save` `setschedule` `setstatus` `unblock` `vv`
-- **personal** (14): `delcmd` `delgreet` `filter` `getcmd` `getgreet` `gfilter` `gstop` `mention` `pfilter` `pstop` `setcmd` `setgreet` `stop` `tog`
-- **search** (2): `ison` `yts`
-- **security** (13): `amute` `antibad` `antifake` `antigm` `antigstatus` `antilink` `antimod` `antispam` `antiword` `aunmute` `pdm` `slink` `warn`
-- **settings** (9): `anticall` `antidelete` `autoread` `autorecording` `autostatuslike` `autostatusseen` `autotyping` `setprefix` `settings`
-- **sticker** (2): `attp` `sticker`
-- **tools** (14): `calc` `delbudget` `expense` `income` `online` `qr` `reminder` `screenshot` `summary` `task` `time` `trt` `tts` `weather`
-- **user** (7): `block` `fullpp` `gjid` `jid` `left` `pp` `whois`
-- **whatsapp** (9): `antiedit` `call` `clear` `delete` `dlt` `forward` `react` `read` `status`
+<br /><br />
+
+<strong>POWERED BY SAJID</strong>
+
+</div>
