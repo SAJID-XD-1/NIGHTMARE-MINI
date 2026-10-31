@@ -9,7 +9,7 @@ const target = (ctx) =>
   ctx.mentioned[0] || ctx.quotedParticipant ||
   (ctx.args[0] && ctx.args[0].replace(/\D/g, '') ? ctx.args[0].replace(/\D/g, '') + '@s.whatsapp.net' : null);
 
-cmd({ pattern: 'groupinfo', alias: ['ginfo'], desc: 'Group ki info', category: 'group', group: true, react: '👥' },
+cmd({ pattern: 'groupinfo', alias: ['gcinfo'], desc: 'Group ki info', category: 'group', group: true, react: '👥' },
   async (sock, mek, m, { getGroupMetadata, reply }) => {
     const g = await getGroupMetadata();
     const admins = g.participants.filter((p) => p.admin).length;
@@ -36,10 +36,10 @@ cmd({ pattern: 'tagall', alias: ['everyone', 'mentionall'], desc: 'Sab members k
     const g = await getGroupMetadata();
     const ids = g.participants.map((p) => p.id);
     const text = `📢 *${q || 'Attention everyone!'}*\n\n` + ids.map((id) => `🕷️ @${num(id)}`).join('\n');
-    await sock.sendMessage(from, { text, mentions: ids }, { quoted: mek });
+    await sock.sendMessage(from, { text, mentions: ids }, { quoted: mek, noFont: true });
   });
 
-cmd({ pattern: 'hidetag', alias: ['tag', 'h'], desc: 'Bina naam dikhaye sab ko tag (text / reply media)', category: 'group', admin: true, react: '🔊' },
+cmd({ pattern: 'hidetag', alias: ['h'], desc: 'Bina naam dikhaye sab ko tag (text / reply media)', category: 'group', admin: true, react: '🔊' },
   async (sock, mek, m, { from, q, quoted, getGroupMetadata, reply, prefix }) => {
     const mentions = (await getGroupMetadata()).participants.map((p) => p.id);
     if (quoted) {
@@ -52,12 +52,12 @@ cmd({ pattern: 'hidetag', alias: ['tag', 'h'], desc: 'Bina naam dikhaye sab ko t
           audioMessage: { audio: media.buffer, mimetype: 'audio/mp4', mentions },
           stickerMessage: { sticker: media.buffer, mentions }
         }[media.type];
-        if (content) return sock.sendMessage(from, content, { quoted: mek });
+        if (content) return sock.sendMessage(from, content, { quoted: mek, noFont: true });
       }
-      return sock.sendMessage(from, { text: q || quoted.text || '🕷️', mentions }, { quoted: mek });
+      return sock.sendMessage(from, { text: q || quoted.text || '🕷️', mentions }, { quoted: mek, noFont: true });
     }
     if (!q) return reply(usage(prefix, 'hidetag Hello', 'Ya kisi message ko reply karein.'));
-    await sock.sendMessage(from, { text: q, mentions }, { quoted: mek });
+    await sock.sendMessage(from, { text: q, mentions }, { quoted: mek, noFont: true });
   });
 
 cmd({ pattern: 'kick', alias: ['remove', 'k'], desc: 'Member ko nikalein (mention/reply)', category: 'group', admin: true, botAdmin: true, react: '👢' },
@@ -154,7 +154,7 @@ cmd({ pattern: 'end', alias: ['endgc'], desc: 'Group khatam: sab ko nikalein (ow
     await ctx.reply(ok(`☠️ ${jids.length} members nikal diye.`));
   });
 
-cmd({ pattern: 'leave', alias: ['leavegc', 'left'], desc: 'Bot group chhod de (owner)', category: 'group', owner: true, group: true, react: '👋' },
+cmd({ pattern: 'leave', alias: ['leavegc'], desc: 'Bot group chhod de (owner)', category: 'group', owner: true, group: true, react: '👋' },
   async (sock, mek, m, ctx) => {
     await ctx.reply(ok('👋 Allah hafiz! 🕷️'));
     await sock.groupLeave(ctx.from);

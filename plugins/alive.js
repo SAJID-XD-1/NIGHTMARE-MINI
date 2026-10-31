@@ -1,26 +1,17 @@
-const { cmd } = require('../nightmare');
+const { cmd, commands } = require('../nightmare');
 const config = require('../config');
+const { box, onOff } = require('../lib/style');
 const { runtime } = require('../lib/functions');
-const { smallCaps } = require('../lib/font');
 
-cmd({
-    pattern: 'alive',
-    alias: ['status'],
-    desc: 'Check bot status',
-    category: 'general',
-    react: '🕸️'
-}, async (sock, mek, m, { reply, pushname }) => {
-
-    const text = `🇦🇱 NIGHTMARE 🕸️
-
-${smallCaps(`Hello ${pushname}`)}
-
-${smallCaps('Status : Online')}
-${smallCaps(`Mode : ${config.MODE}`)}
-${smallCaps(`Prefix : ${config.PREFIX}`)}
-${smallCaps(`Uptime : ${runtime(process.uptime())}`)}
-
-🇦🇱 NIGHTMARE 🕸️`;
-
-    await reply(text);
-});
+cmd({ pattern: 'alive', alias: ['live'], desc: 'Bot online hai ya nahi', category: 'general', react: '🇦🇱' },
+  async (sock, mek, m, { reply }) => {
+    await reply(box('ᴍɪɴɪ ʙᴏᴛ', [
+      ['⛧', 'Status', 'ᴏɴʟɪɴᴇ'],
+      ['🥀', 'Owner', config.OWNER_NAME],
+      ['🖤', 'Uptime', runtime(process.uptime())],
+      ['🔰', 'Prefix', config.PREFIX],
+      ['📦', 'Commands', commands.length],
+      ['𖤐', 'Version', config.VERSION],
+      ['🛡️', 'Antidelete', onOff(config.ANTIDELETE)]
+    ], 'NIGHTMARE-MINI'));
+  });

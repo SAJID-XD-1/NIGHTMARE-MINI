@@ -1,6 +1,7 @@
 // NIGHTMARE-MINI command registry
 const commands = [];
 const watchers = []; // har message par chalne wale hooks (anti-link, anti-bad, ...)
+const ownWatchers = []; // owner ke apne messages par
 
 function cmd(info, func) {
   if (!info || typeof info !== 'object') throw new TypeError('Command information must be an object');
@@ -24,10 +25,14 @@ function onMessage(fn) {
   watchers.push(fn);
 }
 
+function onOwnMessage(fn) {
+  ownWatchers.push(fn);
+}
+
 function findCommand(name) {
   name = String(name || '').toLowerCase();
   if (!name) return undefined;
   return commands.find((c) => c.pattern === name || c.alias.includes(name));
 }
 
-module.exports = { cmd, AddCommand: cmd, Function: cmd, commands, watchers, onMessage, findCommand };
+module.exports = { cmd, AddCommand: cmd, Function: cmd, commands, watchers, ownWatchers, onMessage, onOwnMessage, findCommand };

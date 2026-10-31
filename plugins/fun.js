@@ -15,4 +15,4 @@ cmd({ pattern: 'dice', alias: ['roll'], desc: 'Dice roll karein', category: 'fun
   async (sock, mek, m, { reply }) => reply(mini('🎲 ᴅɪᴄᴇ', `Aapka number: *${1 + Math.floor(Math.random() * 6)}*`)));
 
 cmd({ pattern: 'say', alias: ['echo'], desc: 'Bot aapki baat repeat karega', category: 'fun', react: '🗣️' },
-  async (sock, mek, m, { q, reply, prefix }) => reply(q ? `🕷️ ${q}` : usage(prefix, 'say hello')));
+  async (sock, mek, m, { q, reply, prefix }) => (q ? reply(`🕷️ ${q}`, { noFont: true }) : reply(usage(prefix, 'say hello'))));

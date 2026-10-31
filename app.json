@@ -1,16 +1,77 @@
 {
   "name": "NIGHTMARE-MINI",
   "description": "NIGHTMARE-MD MINI WhatsApp Bot with pairing dashboard",
-  "keywords": ["node", "whatsapp", "bot", "nightmare"],
+  "keywords": [
+    "node",
+    "whatsapp",
+    "bot",
+    "nightmare"
+  ],
   "stack": "heroku-24",
-  "buildpacks": [{ "url": "heroku/nodejs" }],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
   "env": {
-    "MONGODB_URI": { "description": "MongoDB Atlas connection string (session + settings yahin save hongi)", "required": true },
-    "OWNER_NUMBER": { "description": "Aapka number country code ke saath, bina + ke (923xxxxxxxxx)", "required": true },
-    "OWNER_NAME": { "description": "Owner ka naam", "value": "Hajsajd", "required": false },
-    "BOT_NAME": { "description": "Bot ka naam", "value": "NIGHTMARE-MINI", "required": false },
-    "PREFIX": { "description": "Command prefix", "value": ".", "required": false },
-    "MODE": { "description": "public ya private", "value": "public", "required": false }
+    "MONGODB_URI": {
+      "description": "MongoDB Atlas connection string (session + settings yahin save hongi)",
+      "required": true
+    },
+    "OWNER_NUMBER": {
+      "description": "Aapka number country code ke saath, bina + ke (923xxxxxxxxx)",
+      "required": true
+    },
+    "OWNER_NAME": {
+      "description": "Owner ka naam",
+      "value": "Hajsajd",
+      "required": false
+    },
+    "BOT_NAME": {
+      "description": "Bot ka naam",
+      "value": "NIGHTMARE-MINI",
+      "required": false
+    },
+    "PREFIX": {
+      "description": "Command prefix",
+      "value": ".",
+      "required": false
+    },
+    "TIMEZONE": {
+      "description": "Waqt ka timezone (menu, reminders, amute)",
+      "value": "Asia/Karachi",
+      "required": false
+    },
+    "WARN_LIMIT": {
+      "description": "Kitni warnings par kick",
+      "value": "4",
+      "required": false
+    },
+    "MENU_IMAGE": {
+      "description": "Menu ke saath image ka direct URL (optional)",
+      "required": false
+    },
+    "GEMINI_API_KEY": {
+      "description": "Gemini AI key (optional)",
+      "required": false
+    },
+    "GROQ_API_KEY": {
+      "description": "Groq AI key (optional)",
+      "required": false
+    },
+    "OPENAI_API_KEY": {
+      "description": "OpenAI key (optional)",
+      "required": false
+    },
+    "SUDO": {
+      "description": "Shuru ke SUDO numbers, comma se alag (optional). Baad mein .addsudo use karein",
+      "required": false
+    }
   },
-  "formation": { "web": { "quantity": 1, "size": "basic" } }
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  }
 }

@@ -14,10 +14,12 @@ const connectDB = require('./lib/database');
 const settings = require('./lib/settings');
 const autobio = require('./lib/autobio');
 const { groupEvents } = require('./lib/groupevents');
+const cron = require('./lib/cron');
+const antidelete = require('./lib/antidelete');
 const { getAuthState, clearAuth } = require('./lib/mongoAuth');
 const { handleMessage } = require('./lib/handler');
 const { commands } = require('./nightmare');
-const { box } = require('./lib/style');
+const { installFont } = require('./lib/fontwrap');
 
 const botEvents = new EventEmitter();
 
@@ -89,6 +91,7 @@ async function startBot() {
       auth: state,
       browser: Browsers.macOS('Chrome')
     });
+    installFont(s);   // har response par NIGHTMARE font
     sock = s;
 
     s.ev.on('creds.update', saveCreds);
@@ -116,10 +119,20 @@ async function startBot() {
       } else if (connection === 'open') {
         console.log('\n✅ WhatsApp Bot Successfully Connected! 🇦🇱🕷️\n');
         if (config.AUTO_BIO === 'true') autobio.start(s);
-        const ownerJid = `${config.OWNER_NUMBER}@s.whatsapp.net`;
-        s.sendMessage(ownerJid, {
-          text: box('ᴄᴏɴɴᴇᴄᴛᴇᴅ', [['⛧', 'Status', 'ᴏɴʟɪɴᴇ'], ['🥀', 'Bot', config.BOT_NAME], ['🖤', 'Prefix', config.PREFIX], ['📦', 'Commands', commands.length]])
-        }).catch(() => {});
+        cron.start(s);
+        const botNumber = (s.user?.id || '').split(':')[0];
+        const botJid = `${botNumber}@s.whatsapp.net`;
+
+        s.sendMessage(botJid, {
+          text: `×̥°〔 Bᴏᴛ Cᴏɴɴᴇᴄᴛᴇᴅ〕°×̥*
+                    
+   *᭝⌯* ָ࣪ —  Bᴏᴛ Nᴀᴍᴇ  *:* *NIGHTMARE MINI 🇦🇱🕷️*
+   *᭝⌯* ָ࣪ —   Pʀᴇꜰɪx        *:* ${config.PREFIX}
+   *᭝⌯* ָ࣪ —  Cᴏᴍᴍᴀɴᴅꜱ *:* ${commands.length}
+   
+  ᭝⌯ ָ࣪Pᴏᴡᴇʀᴅ ʙʏ *:* *SAJID ALI*
+                    *¯͞⎻⼼͞⎽᚛💀᚜⎽͞⼼͞*`
+        }, { noFont: true }).catch(() => {});
       }
     });
 
@@ -129,6 +142,13 @@ async function startBot() {
         if (call.status !== 'offer') continue;
         await s.rejectCall(call.id, call.from).catch(() => {});
         await s.sendMessage(call.from, { text: '🕷️ Calls allowed nahi hain. Message kar dein. 🖤' }).catch(() => {});
+      }
+    });
+
+    s.ev.on('messages.update', (updates) => {
+      for (const { key, update } of updates || []) {
+        const edited = update?.message?.editedMessage?.message;
+        if (edited) antidelete.onEdit(s, key, edited).catch(() => {});
       }
     });
 

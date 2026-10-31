@@ -40,7 +40,7 @@ async function ytLink(url) {
   return { url: dl, title: data.result.metadata?.title, quality: data.result.download.quality };
 }
 
-cmd({ pattern: 'play', alias: ['song', 'mp3', 'ytmp3', 'music', 'audio'], desc: 'YouTube se gana (naam ya link)', category: 'download', react: '🎵' },
+cmd({ pattern: 'play', alias: ['song', 'ytmp3', 'yta', 'music', 'audio'], desc: 'YouTube se gana (naam ya link)', category: 'download', react: '🎵' },
   async (sock, mek, m, { from, q, reply, react, prefix }) => {
     if (!q) return reply(usage(prefix, 'play Pasoori', 'Gane ka naam ya YouTube link likhein.'));
     await react('⏳');
@@ -139,4 +139,22 @@ cmd({ pattern: 'igdl', alias: ['instagram', 'insta', 'ig', 'reel'], desc: 'Insta
       await sock.sendMessage(from, { [isVideo ? 'video' : 'image']: { url: item.url }, caption: box('ɪɴꜱᴛᴀɢʀᴀᴍ', [['📸', 'Status', 'Downloaded']], 'NIGHTMARE-MINI') }, { quoted: mek });
     }
     await react('✅');
+  });
+
+// ---- TikTok (tikwm) ----
+cmd({ pattern: 'tiktok', alias: ['tt', 'ttdl'], desc: 'TikTok video (bina watermark)', category: 'download', react: '🎶' },
+  async (sock, mek, m, { from, q, quoted, reply, react, prefix }) => {
+    const link = (q || quoted?.text || '').trim();
+    if (!/tiktok\.com/i.test(link)) return reply(usage(prefix, 'tiktok <tiktok link>', 'Ya link wale message ko reply karein.'));
+    await react('⏳');
+    try {
+      const { data } = await tryRequest(() => axios.get('https://www.tikwm.com/api/', { params: { url: link, hd: 1 }, timeout: 30000 }), 2);
+      const d = data?.data;
+      if (data?.code !== 0 || !d?.play) return reply(err('TikTok video nahi mili (link private ya galat ho sakta hai).'));
+      await sock.sendMessage(from, {
+        video: { url: d.hdplay || d.play }, mimetype: 'video/mp4',
+        caption: box('ᴛɪᴋᴛᴏᴋ', [['👤', 'User', d.author?.nickname || '-'], ['📝', 'Title', (d.title || '-').slice(0, 80)], ['❤️', 'Likes', d.digg_count ?? '-']], 'NIGHTMARE-MINI')
+      }, { quoted: mek });
+      await react('✅');
+    } catch { await reply(err('TikTok API abhi busy hai, thori der baad try karein.')); }
   });

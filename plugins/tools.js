@@ -32,7 +32,7 @@ cmd({ pattern: 'weather', alias: ['mausam'], desc: 'Mausam: .weather Karachi', c
     await reply(box('ᴡᴇᴀᴛʜᴇʀ', [['📍', 'Place', place], ['🌡️', 'Temp', `${temp} (feels ${feels})`], ['☁️', 'Sky', cond], ['💧', 'Humidity', hum], ['💨', 'Wind', wind]]));
   });
 
-cmd({ pattern: 'screenshot', alias: ['ss', 'webshot', 'sitepic'], desc: 'Website ka screenshot', category: 'tools', react: '🖥️' },
+cmd({ pattern: 'screenshot', alias: ['ss', 'fullss', 'webshot', 'sitepic'], desc: 'Website ka screenshot', category: 'tools', react: '🖥️' },
   async (sock, mek, m, { from, q, reply, prefix }) => {
     if (!q) return reply(usage(prefix, 'ss https://google.com'));
     const url = /^https?:\/\//i.test(q) ? q : `https://${q}`;
@@ -42,8 +42,17 @@ cmd({ pattern: 'screenshot', alias: ['ss', 'webshot', 'sitepic'], desc: 'Website
     await sock.sendMessage(from, { image: { url: data.screenshot }, caption: box('ꜱᴄʀᴇᴇɴꜱʜᴏᴛ', [['🌐', 'Site', url]], 'NIGHTMARE-MINI') }, { quoted: mek });
   });
 
-cmd({ pattern: 'online', alias: ['whosonline', 'onlinemembers'], desc: 'Group mein kaun online hai', category: 'tools', group: true, admin: true, react: '🟢' },
-  async (sock, mek, m, { from, reply, getGroupMetadata }) => {
+cmd({ pattern: 'online', alias: ['whosonline', 'onlinemembers'], desc: 'online on|off = hamesha online | group mein: kaun online hai', category: 'tools', react: '🟢' },
+  async (sock, mek, m, { from, q, isGroup, isOwner, getAdminInfo, reply, getGroupMetadata, prefix }) => {
+    const config = require('../config'); const settings = require('../lib/settings');
+    if (['on', 'off'].includes(q.toLowerCase())) {
+      if (!isOwner) return reply(err('Ye sirf owner ke liye hai.'));
+      await settings.set('ALWAYS_ONLINE', q.toLowerCase() === 'on' ? 'true' : 'false');
+      return reply(box('ᴀʟᴡᴀʏꜱ ᴏɴʟɪɴᴇ', [['🟢', 'Status', config.ALWAYS_ONLINE === 'true' ? '✅ ON' : '❌ OFF']]));
+    }
+    if (!isGroup) return reply(usage(prefix, 'online on | off', 'Group mein sirf `.online` likhein to online members ki list milegi.'));
+    const info = await getAdminInfo();
+    if (!info.isAdmin) return reply(err('Ye command sirf *group admins* ke liye hai.'));
     await reply(wait('Online members check ho rahe hain (15 sec)...'));
     const meta = await getGroupMetadata();
     const online = new Set();

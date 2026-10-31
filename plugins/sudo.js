@@ -1,129 +1,46 @@
+// 👑 SUDO management (sirf Owner). SUDO list MongoDB / JSON settings mein save hoti hai.
 const { cmd } = require('../nightmare');
-const { set } = require('../lib/settings');
-const { nightmareFont } = require('../lib/font');
 const config = require('../config');
+const settings = require('../lib/settings');
 
-const getSudo = () =>
-    (config.SUDO_USERS || []).map(n => String(n).replace(/\D/g, ''));
+const digits = (v = '') => String(v).replace(/\D/g, '');
+const jidNum = (j = '') => String(j).split('@')[0].split(':')[0].replace(/\D/g, '');
+const list = () => (Array.isArray(config.SUDO) ? config.SUDO.map(String) : []);
 
-const ownerOnly = (ctx) => {
-    if (!ctx.isOwner) {
-        ctx.reply(
-            nightmareFont('Only Owner Can Manage SUDO Users')
-        );
-        return false;
-    }
+// number likh kar, @mention karke ya kisi ke message ko reply karke - teeno chalte hain
+function pickNumber(ctx) {
+  return digits(ctx.q) || jidNum(ctx.mentioned[0]) || jidNum(ctx.quotedParticipant);
+}
 
-    return true;
-};
+cmd({ pattern: 'addsudo', alias: ['setsudo'], desc: 'Add SUDO user', category: 'owner' },
+  async (sock, mek, ctx) => {
+    if (!ctx.isOwner) return ctx.reply('Only the Owner can manage SUDO users.');
+    const number = pickNumber(ctx);
+    if (!number) return ctx.reply(`Usage: ${ctx.prefix}addsudo 923XXXXXXXXX`);
+    if (number === config.OWNER_NUMBER) return ctx.reply('Owner already has full access.');
 
-// ADD SUDO
-cmd({
-    pattern: 'addsudo',
-    desc: 'Add sudo user',
-    category: 'owner'
-}, async (sock, mek, ctx) => {
+    const sudo = list();
+    if (sudo.includes(number)) return ctx.reply('User already SUDO.');
+    sudo.push(number);
+    await settings.set('SUDO', sudo);
+    return ctx.reply(`SUDO added: ${number}`);
+  });
 
-    if (!ownerOnly(ctx)) return;
+cmd({ pattern: 'delsudo', alias: ['removesudo'], desc: 'Remove SUDO user', category: 'owner' },
+  async (sock, mek, ctx) => {
+    if (!ctx.isOwner) return ctx.reply('Only the Owner can manage SUDO users.');
+    const number = pickNumber(ctx);
+    if (!number) return ctx.reply(`Usage: ${ctx.prefix}delsudo 923XXXXXXXXX`);
 
-    const number = ctx.q.replace(/\D/g, '');
+    const sudo = list();
+    if (!sudo.includes(number)) return ctx.reply('User is not SUDO.');
+    await settings.set('SUDO', sudo.filter((u) => u !== number));
+    return ctx.reply(`SUDO removed: ${number}`);
+  });
 
-    if (!number || number.length < 8 || number.length > 15) {
-        return ctx.reply(
-            nightmareFont('Use: .addsudo 923XXXXXXXXX')
-        );
-    }
-
-    if (number === String(config.OWNER_NUMBER).replace(/\D/g, '')) {
-        return ctx.reply(
-            nightmareFont('Owner Already Has Full Access')
-        );
-    }
-
-    const users = getSudo();
-
-    if (users.includes(number)) {
-        return ctx.reply(
-            nightmareFont('User Already Exists In SUDO')
-        );
-    }
-
-    users.push(number);
-
-    await set('SUDO_USERS', users);
-
-    return ctx.reply(
-        nightmareFont(
-            `SUDO Added Successfully\nNumber: ${number}`
-        )
-    );
-});
-
-// DELETE SUDO
-cmd({
-    pattern: 'delsudo',
-    desc: 'Remove sudo user',
-    category: 'owner'
-}, async (sock, mek, ctx) => {
-
-    if (!ownerOnly(ctx)) return;
-
-    const number = ctx.q.replace(/\D/g, '');
-
-    if (!number) {
-        return ctx.reply(
-            nightmareFont('Use: .delsudo 923XXXXXXXXX')
-        );
-    }
-
-    const users = getSudo();
-
-    if (!users.includes(number)) {
-        return ctx.reply(
-            nightmareFont('SUDO User Not Found')
-        );
-    }
-
-    await set(
-        'SUDO_USERS',
-        users.filter(user => user !== number)
-    );
-
-    return ctx.reply(
-        nightmareFont(
-            `SUDO Removed Successfully\nNumber: ${number}`
-        )
-    );
-});
-
-// LIST SUDO
-cmd({
-    pattern: 'listsudo',
-    desc: 'Show sudo users',
-    category: 'owner'
-}, async (sock, mek, ctx) => {
-
-    if (!ownerOnly(ctx)) return;
-
-    const users = getSudo();
-
-    if (!users.length) {
-        return ctx.reply(
-            nightmareFont('No SUDO Users Found')
-        );
-    }
-
-    const list = users
-        .map((number, index) => `${index + 1}. ${number}`)
-        .join('\n');
-
-    return ctx.reply(
-        nightmareFont(
-            `🇦🇱 NIGHTMARE 🕸️
-
-SUDO USERS
-
-${list}`
-        )
-    );
-});
+cmd({ pattern: 'listsudo', alias: ['sudolist', 'getsudo'], desc: 'Show SUDO users', category: 'owner' },
+  async (sock, mek, ctx) => {
+    if (!ctx.isOwner) return ctx.reply('Only the Owner can manage SUDO users.');
+    const sudo = list();
+    return ctx.reply(sudo.length ? `SUDO USERS\n\n${sudo.map((n, i) => `${i + 1}. ${n}`).join('\n')}` : 'No SUDO users.');
+  });

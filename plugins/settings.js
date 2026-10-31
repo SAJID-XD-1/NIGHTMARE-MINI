@@ -24,14 +24,6 @@ for (const [pattern, alias, key, desc, icon] of TOGGLES) {
     });
 }
 
-cmd({ pattern: 'mode', desc: 'Bot mode: public / private', category: 'settings', owner: true, react: '⚙️' },
-  async (sock, mek, m, { q, reply, prefix }) => {
-    const v = q.toLowerCase();
-    if (!['public', 'private'].includes(v)) return reply(usage(prefix, 'mode public | private', `Abhi: ${config.MODE}`));
-    await settings.set('MODE', v);
-    await reply(ok(`Mode ab *${v}* hai.`));
-  });
-
 cmd({ pattern: 'setprefix', desc: 'Prefix badlein (jaise . ! #)', category: 'settings', owner: true, react: '🔰' },
   async (sock, mek, m, { args, reply, prefix }) => {
     const p = args[0];
@@ -42,19 +34,8 @@ cmd({ pattern: 'setprefix', desc: 'Prefix badlein (jaise . ! #)', category: 'set
 
 cmd({ pattern: 'settings', alias: ['setting', 'config'], desc: 'Saari settings dekhein', category: 'settings', owner: true, react: '⚙️' },
   async (sock, mek, m, { reply, prefix }) => {
-    const rows = [['⚙️', 'Mode', config.MODE], ['🔰', 'Prefix', config.PREFIX], ['🔄', 'Auto Bio', onOff(config.AUTO_BIO)]];
+    const rows = [['🔰', 'Prefix', config.PREFIX], ['🔄', 'Auto Bio', onOff(config.AUTO_BIO)]];
     for (const [pattern, , key, desc, icon] of TOGGLES) rows.push([icon, desc, onOff(config[key])]);
     rows.push('', `Badalne ke liye: ${prefix}<command> on | off`);
     await reply(box('ꜱᴇᴛᴛɪɴɢꜱ', rows));
   });
-
-// Per-group toggles (group admin)
-for (const [pattern, key, icon, label] of [['welcome', 'welcome', '👋', 'Welcome message'], ['goodbye', 'goodbye', '🥀', 'Goodbye message']]) {
-  cmd({ pattern, desc: `${label} on/off`, category: 'settings', admin: true, react: icon },
-    async (sock, mek, m, { from, q, reply, prefix }) => {
-      const v = q.toLowerCase();
-      if (!['on', 'off'].includes(v)) return reply(usage(prefix, `${pattern} on | off`, `Abhi: ${onOff(String(settings.group(from)[key] === true))}`));
-      await settings.setGroup(from, { [key]: v === 'on' });
-      await reply(ok(`${icon} ${label}: ${onOff(String(v === 'on'))}`));
-    });
-}
