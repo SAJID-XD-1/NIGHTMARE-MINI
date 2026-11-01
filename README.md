@@ -1,5 +1,13 @@
-# NIGHTMARE-MINI 🇦🇱🕷️ v3.1
+# NIGHTMARE-MINI 🇦🇱🕷️ v3.2
 Developer: **SAJID ALI** • WhatsApp bot (Baileys) • MongoDB session • pairing website
+
+## Multi-number
+Ek hi app mein kai WhatsApp numbers pair ho sakte hain (pairing website par har number apna code leta hai).
+- Har number ka **alag data**: settings, prefix, SUDO, AFK, filters, warns, groups ki settings sab alag.
+- Har number ka owner wo number khud hai (purane bot ka owner wahi rehta hai jo pehle tha).
+- `MAX_SESSIONS` (default 5) limit rakhta hai. Har number ~50-80MB RAM leta hai, Basic dyno (512MB) par 5 theek hain.
+- `.logout confirm` us number ko unlink karke uska saara data delete kar deta hai.
+- `/api/sessions` connected numbers (masked) dikhata hai.
 
 ## Access
 Sirf **Owner** aur **SUDO** commands chala sakte hain (public/private mode nahi hai).

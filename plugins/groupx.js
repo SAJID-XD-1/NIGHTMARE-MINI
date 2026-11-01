@@ -1,6 +1,7 @@
 // Extra group commands: welcome/goodbye (custom), invite, join, revoke, ginfo, common, tag, gpp, msgs/reset/inactive, timed mute
 const { cmd, onMessage } = require('../nightmare');
 const config = require('../config');
+const { botIds, participantIds, anyIn } = require('../lib/jid');
 const settings = require('../lib/settings');
 const { downloadFromMessage } = require('../lib/media');
 const { box, ok, err, warn, usage, mini, onOff } = require('../lib/style');
@@ -140,8 +141,8 @@ cmd({ pattern: 'inactive', desc: 'Inactive members: inactive day 7 | total 5 | k
     if (days === null && total === null) return reply(usage(prefix, 'inactive day 7', 'Ya `inactive total 3`, ya dono. Aakhir mein `kick` likhne par nikal bhi dega.'));
     const { participants, isBotAdmin } = await getAdminInfo();
     const data = counts()[from] || {};
-    const me = num(sock.user.id);
-    const list = participants.filter((p) => !p.admin && num(p.id) !== me).filter((p) => {
+    const bot = botIds(sock);
+    const list = participants.filter((p) => !p.admin && !anyIn(participantIds(p), bot)).filter((p) => {
       const u = data[num(p.id)] || { total: 0, time: 0 };
       const okDay = days === null || u.time === 0 || (Date.now() - u.time) / 86400000 >= days;
       const okTotal = total === null || u.total <= total;

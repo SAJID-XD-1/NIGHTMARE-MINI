@@ -66,6 +66,11 @@
     "SUDO": {
       "description": "Shuru ke SUDO numbers, comma se alag (optional). Baad mein .addsudo use karein",
       "required": false
+    },
+    "MAX_SESSIONS": {
+      "description": "Ek server par kitne WhatsApp numbers (har ek ~50-80MB RAM leta hai)",
+      "value": "5",
+      "required": false
     }
   },
   "formation": {

@@ -1,5 +1,6 @@
 const { cmd } = require('../nightmare');
 const config = require('../config');
+const { botIds, participantIds, anyIn } = require('../lib/jid');
 const { downloadFromMessage } = require('../lib/media');
 const { box, ok, err, warn, usage, mini } = require('../lib/style');
 
@@ -136,8 +137,8 @@ cmd({ pattern: 'kickall', desc: 'Saare non-admin members nikalein (owner)', cate
 cmd({ pattern: 'removeadmins', alias: ['deladmins'], desc: 'Baqi saare admins ko demote karein (owner)', category: 'group', owner: true, botAdmin: true, react: '⚠️' },
   async (sock, mek, m, ctx) => {
     const meta = await ctx.getGroupMetadata();
-    const me = num(sock.user.id);
-    const jids = meta.participants.filter((p) => p.admin && p.admin !== 'superadmin' && num(p.id) !== me && num(p.id) !== config.OWNER_NUMBER).map((p) => p.id);
+    const bot = botIds(sock);
+    const jids = meta.participants.filter((p) => p.admin && p.admin !== 'superadmin' && !anyIn(participantIds(p), bot) && !participantIds(p).has(config.OWNER_NUMBER)).map((p) => p.id);
     if (!jids.length) return ctx.reply(ok('Demote karne ke liye koi admin nahi mila.'));
     await sock.groupParticipantsUpdate(ctx.from, jids, 'demote');
     await ctx.reply(ok(`${jids.length} admins demote kar diye.`));
@@ -147,8 +148,8 @@ cmd({ pattern: 'end', alias: ['endgc'], desc: 'Group khatam: sab ko nikalein (ow
   async (sock, mek, m, ctx) => {
     if (ctx.args[0] !== 'confirm') return ctx.reply(warn(`Ye *sab* members (admins samet) ko nikal dega!\nPakka karna ho to likhein:\n${ctx.prefix}end confirm`));
     const meta = await ctx.getGroupMetadata();
-    const me = num(sock.user.id);
-    const jids = meta.participants.filter((p) => num(p.id) !== me && num(p.id) !== config.OWNER_NUMBER).map((p) => p.id);
+    const bot = botIds(sock);
+    const jids = meta.participants.filter((p) => !anyIn(participantIds(p), bot) && !participantIds(p).has(config.OWNER_NUMBER)).map((p) => p.id);
     if (!jids.length) return ctx.reply(ok('Koi member nahi bacha.'));
     await sock.groupParticipantsUpdate(ctx.from, jids, 'remove');
     await ctx.reply(ok(`☠️ ${jids.length} members nikal diye.`));

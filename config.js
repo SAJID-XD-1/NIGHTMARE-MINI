@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-module.exports = {
+const base = {
   BOT_NAME: process.env.BOT_NAME || 'NIGHTMARE-MINI',
   OWNER_NAME: process.env.OWNER_NAME || 'Hajsajd',
   OWNER_NUMBER: (process.env.OWNER_NUMBER || '923489890758').replace(/\D/g, ''),
@@ -20,12 +20,13 @@ module.exports = {
   ANTI_CALL: process.env.ANTI_CALL || 'false',
   ANTIDELETE: process.env.ANTIDELETE || 'false',
 
+  MAX_SESSIONS: parseInt(process.env.MAX_SESSIONS || '5', 10),   // ek server par kitne numbers
   PORT: process.env.PORT || 8000
 };
 
 // ---- v3 extras (sab optional) ----
-Object.assign(module.exports, {
-  VERSION: '3.1.0',
+Object.assign(base, {
+  VERSION: '3.2.0',
   TIMEZONE: process.env.TIMEZONE || 'Asia/Karachi',
   MENU_IMAGE: process.env.MENU_IMAGE || '',        // menu ke saath image (direct URL)
   WARN_LIMIT: Number(process.env.WARN_LIMIT || 4),
@@ -46,3 +47,24 @@ Object.assign(module.exports, {
   HEROKU_API_KEY: process.env.HEROKU_API_KEY || '',
   HEROKU_APP_NAME: process.env.HEROKU_APP_NAME || ''
 });
+
+// ---- Multi-number: har session (paired number) ka apna config overlay hota hai ----
+// Session ke andar config.PREFIX / config.SUDO / config.OWNER_NUMBER ... usi number ki values dete hain.
+const { als } = require('./lib/context');
+const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+
+module.exports = new Proxy(base, {
+  get(t, k) {
+    const o = als.getStore()?.config;
+    return o && has(o, k) ? o[k] : t[k];
+  },
+  set(t, k, v) {
+    const o = als.getStore()?.config;
+    if (o) o[k] = v; else t[k] = v;
+    return true;
+  },
+  has: (t, k) => k in t,
+  ownKeys: (t) => Reflect.ownKeys(t),
+  getOwnPropertyDescriptor: (t, k) => Reflect.getOwnPropertyDescriptor(t, k)
+});
+module.exports.base = base;   // asli (global) values - proxy ke bina
