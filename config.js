@@ -26,7 +26,7 @@ const base = {
 
 // ---- v3 extras (sab optional) ----
 Object.assign(base, {
-  VERSION: '3.2.0',
+  VERSION: '3.4.0',
   TIMEZONE: process.env.TIMEZONE || 'Asia/Karachi',
   MENU_IMAGE: process.env.MENU_IMAGE || '',        // menu ke saath image (direct URL)
   WARN_LIMIT: Number(process.env.WARN_LIMIT || 4),
