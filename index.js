@@ -3,6 +3,15 @@ const path = require('path');
 const config = require('./config');
 const manager = require('./main');
 
+// libsignal har purane/kharab message par poora stack print karta hai (Bad MAC ...). Logs saaf rakhne ke liye ginti karke ek line chhapte hain
+const NOISE = /^(Session error|Failed to decrypt message with any known session|Closing (open )?session|Closing stale open session|Removing old closed session|Decrypted message with closed session)/;
+let noise = 0;
+for (const m of ['error', 'warn', 'info', 'log']) {
+  const orig = console[m].bind(console);
+  console[m] = (...a) => { if (typeof a[0] === 'string' && NOISE.test(a[0])) { noise++; return; } orig(...a); };
+}
+setInterval(() => { if (noise) { console.log(`⚠️ ${noise} decrypt/session warnings (Bad MAC etc.) pichle minute mein — chhupa diye`); noise = 0; } }, 60000).unref();
+
 process.on('unhandledRejection', (e) => console.error('⚠️ unhandledRejection:', e));
 process.on('uncaughtException', (e) => console.error('⚠️ uncaughtException:', e));
 
