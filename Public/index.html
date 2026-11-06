@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07080d">
+  <meta name="description" content="NIGHTMARE MINI WhatsApp pairing system.">
+  <title>NIGHTMARE MINI | The Spider Link</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="photo-backdrop" aria-hidden="true"></div>
+  <div class="scene-grid" aria-hidden="true"></div>
+  <div class="scene-glow glow-red" aria-hidden="true"></div>
+  <div class="scene-glow glow-blue" aria-hidden="true"></div>
+  <div class="web-overlay" aria-hidden="true">
+    <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
+      <g class="web-lines">
+        <path d="M300 0V600M0 300H600M88 88L512 512M512 88L88 512M190 0L410 600M410 0L190 600M0 190L600 410M0 410L600 190"/>
+        <circle cx="300" cy="300" r="75"/><circle cx="300" cy="300" r="145"/><circle cx="300" cy="300" r="220"/><circle cx="300" cy="300" r="295"/>
+      </g>
+    </svg>
+  </div>
+  <div id="particles" aria-hidden="true"></div>
+  <div id="cursor-glow" aria-hidden="true"></div>
+  <div id="web-burst-layer" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Nightmare Mini home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><path d="M32 8 27 22 13 14 19 29 7 38 23 39 19 55 32 44 45 55 41 39 57 38 45 29 51 14 37 22Z"/><path d="M32 18V46M22 27 12 23M42 27 52 23M23 39 13 46M41 39 51 46"/></svg>
+      </span>
+      <span class="brand-copy"><strong>NIGHTMARE<span> MINI</span></strong><small>THE SPIDER LINK SYSTEM</small></span>
+    </a>
+    <div class="system-status"><i class="status-light"></i><span id="systemStatus">SYSTEM ONLINE</span></div>
+  </header>
+
+  <main class="main-layout">
+    <section class="hero">
+      <div class="eyebrow"><span></span> THE WEB IS WAITING <span></span></div>
+      <p class="hero-kicker">NIGHTMARE NETWORK / 001</p>
+      <h1>ENTER THE<br><span>SPIDER LINK.</span></h1>
+      <p class="hero-description">Connect your WhatsApp account to the NIGHTMARE MINI system. One link. One network. Your connection starts here.</p>
+
+      <div class="spider-stage" aria-label="Animated spider emblem">
+        <div class="web-disc"></div>
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div>
+        <div class="spider-core">
+          <div class="spider-aura"></div>
+          <img class="spider-emblem" src="/images/spider-emblem.jpg" alt="NIGHTMARE spider emblem">
+          <span class="core-label">NM</span>
+        </div>
+        <span class="orbit-point point-one"></span><span class="orbit-point point-two"></span><span class="orbit-point point-three"></span>
+        <span class="stage-coordinate coord-left">40° 42' 46"N</span>
+        <span class="stage-coordinate coord-right">NETWORK ACTIVE</span>
+      </div>
+
+      <div class="hero-foot"><span class="foot-line"></span><span>BUILT IN THE SHADOWS</span><span class="foot-line"></span></div>
+      <div class="feature-row">
+        <div class="feature"><b>01</b><span><strong>SECURE LINK</strong><small>Private authentication</small></span></div>
+        <div class="feature"><b>02</b><span><strong>FAST CONNECT</strong><small>Pairing code protocol</small></span></div>
+      </div>
+    </section>
+
+    <section class="pairing-section">
+      <div class="pair-card">
+        <div class="card-top">
+          <div><span class="section-index">01 — AUTHENTICATION</span><h2>Connect Device</h2></div>
+          <span class="card-spider" aria-hidden="true">✳</span>
+        </div>
+        <p class="card-description">Enter your WhatsApp number with its country code to generate your personal pairing code.</p>
+
+        <form id="pairForm">
+          <label for="phone">WHATSAPP PHONE NUMBER</label>
+          <div class="input-shell">
+            <span class="input-prefix">+</span>
+            <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="923001234567" maxlength="15" required>
+            <span class="input-state"></span>
+          </div>
+          <small class="input-help">COUNTRY CODE FIRST · DIGITS ONLY · NO SPACES</small>
+          <button type="submit" id="pairButton">
+            <span class="button-web" aria-hidden="true">⌁</span><span id="buttonText">GENERATE PAIRING CODE</span><span class="button-arrow">↗</span>
+          </button>
+        </form>
+
+        <div class="message-box" id="messageBox" role="status" aria-live="polite" hidden></div>
+        <div class="code-panel" id="codePanel" hidden>
+          <div class="code-heading"><i></i> YOUR AUTHENTICATION CODE</div>
+          <div class="pair-code" id="pairCode">----</div>
+          <button type="button" id="copyButton" class="copy-button">COPY PAIRING CODE</button>
+          <p class="code-warning">WhatsApp → Linked Devices → Link a Device → Link with phone number instead.</p>
+        </div>
+
+        <div class="divider"><span></span><small>CONNECTION STATUS</small><span></span></div>
+        <div class="connection-row">
+          <span class="connection-symbol">⌘</span>
+          <div class="connection-info"><strong id="connectionTitle">Awaiting authentication</strong><small id="connectionDescription">Ready to initiate pairing</small></div>
+          <span class="connection-badge" id="connectionBadge">IDLE</span>
+        </div>
+        <div class="card-footer"><span>🇦🇱 NIGHTMARE SYSTEMS</span><span>VERSION 1.0.0</span></div>
+      </div>
+
+      <div class="security-note"><span>◆</span><p><strong>SECURITY NOTICE</strong>Never share your pairing code or WhatsApp session credentials with anyone.</p></div>
+    </section>
+  </main>
+
+  <footer class="page-footer"><span>© NIGHTMARE-MINI</span><span>POWERED BY NIGHTMARE <b>✳</b></span></footer>
+  <script src="/script.js"></script>
+</body>
+</html>
