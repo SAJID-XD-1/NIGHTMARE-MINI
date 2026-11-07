@@ -77,27 +77,3 @@ cmd({ pattern: 'autobio', alias: ['bioauto'], desc: 'Auto bio on/off', category:
     await reply(ok(`Auto bio ab ${onOff(config.AUTO_BIO)} hai.`));
   });
 
-cmd({ pattern: 'gstatus', alias: ['groupstatus', 'poststatus'], desc: 'Status post karein (text ya reply se media)', category: 'owner', owner: true, react: '📡' },
-  async (sock, mek, m, { q, quoted, pushname, reply, isGroup, getGroupMetadata, prefix }) => {
-    const me = (sock.user.id || '').split(':')[0] + '@s.whatsapp.net';
-    let audience = [me, `${config.OWNER_NUMBER}@s.whatsapp.net`];
-    if (isGroup) audience = [...new Set([...audience, ...(await getGroupMetadata()).participants.map((p) => p.id)])];
-    const opts = { statusJidList: audience };
-
-    if (!quoted) {
-      if (!q) return reply(usage(prefix, 'gstatus Hello world', 'Ya kisi image/video ko reply karein.'));
-      await sock.sendMessage('status@broadcast', { text: q, backgroundColor: '#000000', font: 2 }, opts);
-      return reply(ok('📡 Text status post ho gaya.'));
-    }
-    const media = await downloadFromMessage(quoted.message);
-    if (!media) return reply(err('Sirf image / video / audio reply karein.'));
-    const caption = q || media.content.caption || `🕷️ ${pushname}`;
-    const content = {
-      imageMessage: { image: media.buffer, caption },
-      videoMessage: { video: media.buffer, caption },
-      audioMessage: { audio: media.buffer, mimetype: 'audio/mp4', ptt: false }
-    }[media.type];
-    if (!content) return reply(err('Ye media status ke liye support nahi hota.'));
-    await sock.sendMessage('status@broadcast', content, opts);
-    await reply(ok('📡 Status post ho gaya.'));
-  });

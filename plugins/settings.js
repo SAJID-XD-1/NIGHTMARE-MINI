@@ -5,13 +5,9 @@ const { box, ok, usage, onOff, err } = require('../lib/style');
 
 // Global on/off toggles (sirf owner)
 const TOGGLES = [
-  ['autoread', ['aread'], 'AUTO_READ', 'Messages auto read', '👁️'],
-  ['autostatusseen', ['avs', 'statusseen', 'autoviewstatus'], 'AUTO_STATUS_SEEN', 'Status auto seen', '👀'],
   ['autostatuslike', ['als', 'autolikestatus'], 'AUTO_STATUS_LIKE', 'Status auto like 🖤', '🖤'],
   ['autotyping', ['autotype', 'atyping'], 'AUTO_TYPING', 'Typing indicator', '⌨️'],
   ['autorecording', ['autorec', 'arecording'], 'AUTO_RECORDING', 'Recording indicator', '🎙️'],
-  ['anticall', ['anti-call', 'acall'], 'ANTI_CALL', 'Calls auto reject', '📵'],
-  ['antidelete', ['ad', 'antidel'], 'ANTIDELETE', 'Deleted msgs owner ko bhejo', '🗑️']
 ];
 
 for (const [pattern, alias, key, desc, icon] of TOGGLES) {
@@ -34,7 +30,7 @@ cmd({ pattern: 'setprefix', desc: 'Prefix badlein (jaise . ! #)', category: 'set
 
 cmd({ pattern: 'settings', alias: ['setting', 'config'], desc: 'Saari settings dekhein', category: 'settings', owner: true, react: '⚙️' },
   async (sock, mek, m, { reply, prefix }) => {
-    const rows = [['🔰', 'Prefix', config.PREFIX], ['🔄', 'Auto Bio', onOff(config.AUTO_BIO)]];
+    const rows = [['🔰', 'Prefix', config.PREFIX], ['👁️', 'Auto read (.read)', config.AUTO_READ], ['👀', 'Status auto seen (.status)', onOff(config.AUTO_STATUS_SEEN)], ['📵', 'Calls reject (.call)', onOff(config.ANTI_CALL)], ['🔄', 'Auto Bio', onOff(config.AUTO_BIO)]];
     for (const [pattern, , key, desc, icon] of TOGGLES) rows.push([icon, desc, onOff(config[key])]);
     rows.push('', `Badalne ke liye: ${prefix}<command> on | off`);
     await reply(box('ꜱᴇᴛᴛɪɴɢꜱ', rows));

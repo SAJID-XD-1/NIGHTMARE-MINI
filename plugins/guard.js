@@ -1,4 +1,4 @@
-// Group protection: antilink, slink, antiword, antibad, antifake, antispam, antigm, antigstatus, antimod, pdm, warn, amute/aunmute
+// Group protection: antilink, slink, antiword, antifake, antispam, antigm, antigstatus, antimod, pdm, warn, amute/aunmute
 const { cmd, onMessage } = require('../nightmare');
 const config = require('../config');
 const settings = require('../lib/settings');
@@ -76,12 +76,19 @@ cmd({ pattern: 'slink', desc: 'Strict WhatsApp-link filter panel (limit, cooldow
   });
 
 /* ---------------- ANTIWORD / ANTIBAD ---------------- */
-cmd({ pattern: 'antiword', alias: ['aw'], desc: 'Custom words block (on/off, add, remove, list, kick/warn/null)', category: 'security', admin: true, botAdmin: true, react: '🚫' },
-  async (sock, mek, m, { from, args, q, reply, prefix }) => {
+// .antibad / .badword / .ab on  =  antiword ke saath tayyar gali list (Urdu/English) load ho jati hai
+const DEFAULT_BAD = ["fuck", "fucker", "fucking", "shit", "bitch", "asshole", "bastard", "motherfucker", "dick", "pussy", "cock", "whore", "slut", "nigga", "nigger", "bhosdi", "bhosri", "bhosdike", "bhosdiwale", "chutiya", "chutiyapa", "madarchod", "behenchod", "bhenchod", "bhenkelode", "lund", "lode", "gaand", "gand", "randi", "rndi", "harami", "kutti", "kutta", "hijda", "bsdk", "mkc", "bkc", "teri maa ki", "teri behan ki", "maa chod", "behan chod"];
+
+cmd({ pattern: 'antiword', alias: ['aw', 'antibad', 'badword', 'ab'], desc: 'Custom words block (on/off, add, remove, list, kick/warn/null)', category: 'security', admin: true, botAdmin: true, react: '🚫' },
+  async (sock, mek, m, { from, args, q, reply, prefix, command }) => {
     const cur = settings.group(from).antiword || { on: false, action: 'null', words: [] };
     const save = (p) => settings.setGroup(from, { antiword: { ...cur, ...p } });
     const c = (args[0] || '').toLowerCase();
     const rest = q.slice(c.length).trim();
+    if (c === 'on' && ['antibad', 'badword', 'ab'].includes(command) && !cur.words.length) {
+      await save({ on: true, words: DEFAULT_BAD, action: cur.action === 'null' ? 'warn' : cur.action });
+      return reply(ok(`Anti-bad ON: tayyar gali list (${DEFAULT_BAD.length} words) load ho gayi. Action: *${cur.action === 'null' ? 'warn' : cur.action}*\nBadalne ke liye: ${prefix}antiword kick|warn|null`));
+    }
     if (c === 'on' || c === 'off') { await save({ on: c === 'on' }); return reply(ok(`Anti-word: ${onOff(String(c === 'on'))}`)); }
     if (['kick', 'warn', 'null'].includes(c)) { await save({ action: c, on: true }); return reply(ok(`Action: *${c}*`)); }
     if (c === 'add') { if (!rest) return reply(usage(prefix, 'antiword add word1,word2')); await save({ words: [...new Set([...cur.words, ...rest.toLowerCase().split(',').map((w) => w.trim()).filter(Boolean)])] }); return reply(ok('Words add ho gaye.')); }
@@ -89,21 +96,6 @@ cmd({ pattern: 'antiword', alias: ['aw'], desc: 'Custom words block (on/off, add
     if (c === 'clear') { await save({ words: [] }); return reply(ok('Saare words saaf.')); }
     return reply(box('ᴀɴᴛɪ ᴡᴏʀᴅ', [['📌', 'Status', onOff(String(!!cur.on))], ['⚡', 'Action', cur.action], ['📝', 'Words', cur.words.join(', ') || '-'], '',
       `${prefix}antiword on|off`, `${prefix}antiword kick|warn|null`, `${prefix}antiword add w1,w2`, `${prefix}antiword remove w1`, `${prefix}antiword clear`]));
-  });
-
-// Built-in gali filter (Urdu/English)
-const BAD_WORDS = new Set(['fuck', 'fucker', 'fucking', 'shit', 'bitch', 'asshole', 'bastard', 'motherfucker', 'dick', 'pussy', 'cock', 'whore', 'slut', 'nigga', 'nigger',
-  'bhosdi', 'bhosri', 'bhosdike', 'bhosdiwale', 'chutiya', 'chutiyapa', 'madarchod', 'behenchod', 'bhenchod', 'bhenkelode', 'lund', 'lode', 'gaand', 'gand', 'randi', 'rndi', 'harami', 'kutti', 'kutta', 'hijda', 'bsdk', 'mc', 'bc', 'mkc', 'bkc']);
-const BAD_PHRASES = ['teri maa ki', 'teri behan ki', 'maa chod', 'behan chod'];
-const hasBad = (t) => { t = t.toLowerCase(); return BAD_PHRASES.some((p) => t.includes(p)) || (t.match(/[a-z]+/g) || []).some((w) => BAD_WORDS.has(w)); };
-
-cmd({ pattern: 'antibad', alias: ['badword', 'ab'], desc: 'Built-in gali filter (on/off, kick/warn/null)', category: 'security', admin: true, botAdmin: true, react: '🚫' },
-  async (sock, mek, m, { from, args, reply, prefix }) => {
-    const cur = settings.group(from).antibad || { on: false, action: 'warn' };
-    const c = (args[0] || '').toLowerCase();
-    if (c === 'on' || c === 'off') { await settings.setGroup(from, { antibad: { ...cur, on: c === 'on' } }); return reply(ok(`Anti-bad: ${onOff(String(c === 'on'))}`)); }
-    if (['kick', 'warn', 'null', 'delete'].includes(c)) { await settings.setGroup(from, { antibad: { on: true, action: c === 'delete' ? 'null' : c } }); return reply(ok(`Action: *${c}*`)); }
-    return reply(box('ᴀɴᴛɪ ʙᴀᴅ', [['📌', 'Status', onOff(String(!!cur.on))], ['⚡', 'Action', cur.action], '', `${prefix}antibad on|off`, `${prefix}antibad kick|warn|null`]));
   });
 
 /* ---------------- ANTIFAKE ---------------- */
@@ -237,7 +229,7 @@ onMessage(async (sock, msg, ctx) => {
   const message = ctx.message || {};
   const isStatusGm = !!message.groupStatusMentionMessage;
   const isGroupStatus = !!(message.groupStatusMessageV2 || message.groupStatusMessage);
-  const wantsAny = g.antilink?.on || g.slink?.enabled || g.antiword?.on || g.antibad?.on || g.antispam?.on ||
+  const wantsAny = g.antilink?.on || g.slink?.enabled || g.antiword?.on || g.antispam?.on ||
     (g.antigm?.on && isStatusGm) || (g.antigstatus?.on && isGroupStatus);
   if (!wantsAny) return;
 
@@ -296,7 +288,6 @@ onMessage(async (sock, msg, ctx) => {
     if (hit) { await applyAction(sock, msg, ctx, g.antiword.action, `🚫 Ye word allowed nahi: *${hit}*`, 'word'); return true; }
   }
 
-  if (g.antibad?.on && hasBad(body)) { await applyAction(sock, msg, ctx, g.antibad.action, '🚫 Gali / bad word allowed nahi hai!', 'bad'); return true; }
 });
 
-module.exports = { hasBad, normalizeUrl };
+module.exports = { normalizeUrl };

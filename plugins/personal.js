@@ -138,10 +138,11 @@ cmd({ pattern: 'clear', desc: 'Chat clear karein', category: 'whatsapp', owner: 
   });
 
 /* ---------------- anti-delete / anti-edit destination ---------------- */
-function destCommand(pattern, label, flag, destKey, scopeKey) {
-  cmd({ pattern, desc: `${label}: ${pattern} p | g | <jid> [pm|gm|no-pm|no-gm] | off`, category: 'whatsapp', owner: true, react: '🛡️' },
+function destCommand(pattern, label, flag, destKey, scopeKey, alias = []) {
+  cmd({ pattern, alias, desc: `${label}: ${pattern} p | g | <jid> [pm|gm|no-pm|no-gm] | off`, category: 'whatsapp', owner: true, react: '🛡️' },
     async (sock, mek, m, { args, reply, prefix }) => {
-      const dest = (args[0] || '').toLowerCase(); const scope = (args[1] || '').toLowerCase();
+      let dest = (args[0] || '').toLowerCase(); const scope = (args[1] || '').toLowerCase();
+      if (dest === 'on') dest = 'p';       // purani aadat: .antidelete on
       const valid = ['pm', 'gm', 'no-pm', 'no-gm'];
       if (!dest || (scope && !valid.includes(scope)))
         return reply(box(label, [['📌', 'Status', onOff(config[flag])], ['📍', 'Dest', config[destKey]], ['🎯', 'Scope', config[scopeKey] || 'all'], '',
@@ -153,15 +154,15 @@ function destCommand(pattern, label, flag, destKey, scopeKey) {
       await reply(ok(`${label} ON ➜ ${config[destKey]}${scope ? ` (${scope})` : ''}`));
     });
 }
-destCommand('delete', 'ᴀɴᴛɪ ᴅᴇʟᴇᴛᴇ', 'ANTIDELETE', 'ANTIDELETE_DEST', 'ANTIDELETE_SCOPE');
+destCommand('delete', 'ᴀɴᴛɪ ᴅᴇʟᴇᴛᴇ', 'ANTIDELETE', 'ANTIDELETE_DEST', 'ANTIDELETE_SCOPE', ['antidelete', 'ad', 'antidel']);
 destCommand('antiedit', 'ᴀɴᴛɪ ᴇᴅɪᴛ', 'ANTI_EDIT', 'ANTI_EDIT_DEST', 'ANTI_EDIT_SCOPE');
 
 /* ---------------- status / call / read / online toggles ---------------- */
-cmd({ pattern: 'status', desc: 'Status auto-view on/off', category: 'whatsapp', owner: true, react: '👀' },
+cmd({ pattern: 'status', alias: ['autostatusseen', 'avs', 'statusseen', 'autoviewstatus'], desc: 'Status auto-view on/off', category: 'whatsapp', owner: true, react: '👀' },
   async (sock, mek, m, { q, reply, prefix }) => { if (!['on', 'off'].includes(q)) return reply(usage(prefix, 'status on | off', `Abhi: ${onOff(config.AUTO_STATUS_SEEN)}`)); await settings.set('AUTO_STATUS_SEEN', q === 'on' ? 'true' : 'false'); await reply(ok(`Auto status view: ${onOff(config.AUTO_STATUS_SEEN)}`)); });
-cmd({ pattern: 'call', desc: 'Calls auto-reject on/off', category: 'whatsapp', owner: true, react: '📵' },
+cmd({ pattern: 'call', alias: ['anticall', 'anti-call', 'acall'], desc: 'Calls auto-reject on/off', category: 'whatsapp', owner: true, react: '📵' },
   async (sock, mek, m, { q, reply, prefix }) => { if (!['on', 'off'].includes(q)) return reply(usage(prefix, 'call on | off', `Abhi: ${onOff(config.ANTI_CALL)}`)); await settings.set('ANTI_CALL', q === 'on' ? 'true' : 'false'); await reply(ok(`Reject calls: ${onOff(config.ANTI_CALL)}`)); });
-cmd({ pattern: 'read', desc: 'Auto read: read on | off | p (sirf DM) | g (sirf groups)', category: 'whatsapp', owner: true, react: '👁️' },
+cmd({ pattern: 'read', alias: ['autoread', 'aread'], desc: 'Auto read: read on | off | p (sirf DM) | g (sirf groups)', category: 'whatsapp', owner: true, react: '👁️' },
   async (sock, mek, m, { q, reply, prefix }) => {
     if (!['on', 'off', 'p', 'g'].includes(q)) return reply(usage(prefix, 'read on | off | p | g', `Abhi: ${config.AUTO_READ}`));
     await settings.set('AUTO_READ', q === 'on' ? 'true' : q === 'off' ? 'false' : q);

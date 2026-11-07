@@ -1,4 +1,4 @@
-# NIGHTMARE-MINI 🇦🇱🕷️ v3.5
+# NIGHTMARE-MINI 🇦🇱🕷️ v3.6
 Developer: **SAJID ALI** • WhatsApp bot (Baileys) • MongoDB session • pairing website
 
 ## Multi-number
@@ -8,6 +8,9 @@ Ek hi app mein kai WhatsApp numbers pair ho sakte hain (pairing website par har 
 - `MAX_SESSIONS` (default 5) limit rakhta hai. Har number ~50-80MB RAM leta hai, Basic dyno (512MB) par 5 theek hain.
 - `.logout confirm` us number ko unlink karke uska saara data delete kar deta hai.
 - `/api/sessions` connected numbers (masked) dikhata hai.
+
+## Update karne ka sahi tareeqa (zaroori)
+`unzip -o` purani files **delete nahi karta** - isi se plugins do baar chalte hain. Hamesha `update.sh` use karein (README ke neeche / chat mein diya gaya), jo pehle purani files hata kar naya code rakhta hai.
 
 ## Stability (v3.5)
 - WhatsApp ka 500 error aaye to session delete **nahi** hota, bot khud dobara connect karta hai (6 lagatar 500 par `needs-repair`: auth salamat, website se dobara pair).

@@ -70,12 +70,14 @@ form.addEventListener("submit", async (event) => {
   setLoading(true);
   setConnection("Contacting pairing service", "Waiting for the server response...", "WAIT");
 
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 45000);
   try {
     const response = await fetch("/api/pair", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phone }),
-      signal: AbortSignal.timeout(30000)
+      signal: controller.signal
     });
     const data = await response.json().catch(() => ({}));
 
@@ -90,7 +92,7 @@ form.addEventListener("submit", async (event) => {
     setConnection("Pairing code generated", "Complete the process in WhatsApp.", "CODE READY");
     systemStatus.textContent = "PAIRING READY";
   } catch (error) {
-    const message = error.name === "TimeoutError"
+    const message = (error.name === "TimeoutError" || error.name === "AbortError")
       ? "The pairing server took too long to respond. Please try again."
       : error.message === "Failed to fetch"
         ? "Pairing backend is not connected. Check that /api/pair is running."
@@ -99,6 +101,7 @@ form.addEventListener("submit", async (event) => {
     setConnection("Pairing unavailable", "Check the backend server and try again.", "OFFLINE");
     systemStatus.textContent = "BACKEND CHECK";
   } finally {
+    clearTimeout(timer);
     setLoading(false);
   }
 });
@@ -107,7 +110,15 @@ copyButton.addEventListener("click", async () => {
   const code = pairCode.textContent.trim();
   if (!code || code === "----") return;
   try {
-    await navigator.clipboard.writeText(code);
+    if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(code);
+    else {   // http:// ya purane browser ke liye
+      const ta = document.createElement("textarea");
+      ta.value = code; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand("copy");
+      ta.remove();
+      if (!ok) throw new Error("copy failed");
+    }
     copyButton.textContent = "✓ CODE COPIED";
     setTimeout(() => { copyButton.textContent = "COPY PAIRING CODE"; }, 1800);
   } catch {
@@ -164,3 +175,19 @@ if (finePointer) {
 }
 
 setConnection("Awaiting authentication", "Ready to initiate pairing", "IDLE");
+
+/* Server status: connected numbers aur version */
+(async () => {
+  try {
+    const [health, info] = await Promise.all([fetch("/health").then((r) => r.json()), fetch("/api/sessions").then((r) => r.json())]);
+    const count = info.sessions.length;
+    systemStatus.textContent = `SYSTEM ONLINE · ${count}/${info.max} NUMBERS`;
+    const footerVersion = document.querySelector(".card-footer span:last-child");
+    if (footerVersion && health.version) footerVersion.textContent = `VERSION ${health.version}`;
+    if (count >= info.max) {
+      pairButton.disabled = true;
+      showMessage("Server abhi full hai (maximum numbers connected). Baad mein try karein.", "error");
+      setConnection("Server full", "No free slots right now", "FULL");
+    }
+  } catch { /* status na mile to bhi pairing chalne do */ }
+})();

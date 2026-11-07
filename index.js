@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const config = require('./config');
 const manager = require('./main');
 
@@ -15,13 +16,16 @@ setInterval(() => { if (noise) { console.log(`⚠️ ${noise} decrypt/session wa
 process.on('unhandledRejection', (e) => console.error('⚠️ unhandledRejection:', e));
 process.on('uncaughtException', (e) => console.error('⚠️ uncaughtException:', e));
 
+// Folder ka naam public ho ya Public - Linux (Heroku) par case matter karta hai, isliye jo maujood ho wahi use karo
+const PUBLIC_DIR = ['public', 'Public'].map((d) => path.join(__dirname, d)).find((d) => fs.existsSync(path.join(d, 'index.html'))) || path.join(__dirname, 'public');
+
 const app = express();
 app.set('trust proxy', 1);   // Heroku proxy ke peeche asli IP
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(PUBLIC_DIR, { maxAge: '1h' }));
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'online', bot: config.BOT_NAME, uptime: process.uptime(), numbers: manager.list().length });
+  res.json({ status: 'online', bot: config.BOT_NAME, uptime: process.uptime(), numbers: manager.list().length, version: config.VERSION });
 });
 
 // Connected numbers (masked) - dashboard ke liye
@@ -53,7 +57,7 @@ app.post('/api/pair', async (req, res) => {
   };
   const timer = setTimeout(
     () => finish(504, { error: 'WhatsApp server ne jawab nahi diya. Country code ke saath number likhein (jaise 92...) aur dobara try karein.' }),
-    30000
+    42000
   );
 
   try {
@@ -63,7 +67,7 @@ app.post('/api/pair', async (req, res) => {
   }
 });
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
 
 app.listen(config.PORT, () => {
   console.log(`\n🌐 NIGHTMARE Dashboard running on port ${config.PORT}`);

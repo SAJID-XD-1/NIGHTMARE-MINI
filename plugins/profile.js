@@ -16,7 +16,7 @@ cmd({ pattern: 'gjid', desc: 'Jin groups mein bot hai unki JID list', category: 
     await reply(box('ɢʀᴏᴜᴘꜱ', groups.map((g, i) => `*${i + 1}. ${g.subject}*\n${g.id}`)));
   });
 
-cmd({ pattern: 'left', alias: ['leaveme'], desc: 'Bot group chhod de (optional goodbye text)', category: 'user', owner: true, group: true, react: '👋' },
+cmd({ pattern: 'left', alias: ['leaveme', 'leave', 'leavegc'], desc: 'Bot group chhod de (optional goodbye text)', category: 'user', owner: true, group: true, react: '👋' },
   async (sock, mek, m, { from, q }) => { if (q) await sock.sendMessage(from, { text: q }); await sock.groupLeave(from); });
 
 cmd({ pattern: 'block', desc: 'User ko block (reply/mention/inbox)', category: 'user', owner: true, react: '⛔' },

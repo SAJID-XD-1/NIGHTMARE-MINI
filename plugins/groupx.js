@@ -51,14 +51,17 @@ cmd({ pattern: 'ginfo', desc: 'Invite link se group ki info', category: 'group',
   });
 
 /* ---------- tag ---------- */
-cmd({ pattern: 'tag', desc: 'tag all | admin | notadmin | <text> | reply', category: 'group', group: true, admin: true, react: '📣' },
-  async (sock, mek, m, { from, q, quoted, getGroupMetadata, reply, prefix }) => {
+cmd({ pattern: 'tag', alias: ['tagall', 'everyone', 'mentionall', 'hidetag', 'h'], desc: 'tag all | admin | notadmin | <text> (hidetag: bina list ke sab ko tag)', category: 'group', group: true, admin: true, react: '📣' },
+  async (sock, mek, m, { from, q, quoted, command, getGroupMetadata, reply, prefix }) => {
     const ps = (await getGroupMetadata()).participants;
     const all = ps.map((p) => p.id);
+    const list = '```' + all.map((j, i) => `${i + 1}. @${num(j)}`).join('\n') + '```';
     const c = q.toLowerCase();
-    if (c === 'all') return sock.sendMessage(from, { text: '```' + all.map((j, i) => `${i + 1}. @${num(j)}`).join('\n') + '```', mentions: all }, { quoted: mek, noFont: true });
-    if (c === 'admin' || c === 'admins') { const a = ps.filter((p) => p.admin).map((p) => p.id); return sock.sendMessage(from, { text: a.map((j) => `🛡️ @${num(j)}`).join('\n'), mentions: a }, { quoted: mek, noFont: true }); }
-    if (c === 'notadmin') { const a = ps.filter((p) => !p.admin).map((p) => p.id); return sock.sendMessage(from, { text: a.map((j) => `👤 @${num(j)}`).join('\n'), mentions: a }, { quoted: mek, noFont: true }); }
+    const hidden = command === 'hidetag' || command === 'h';
+    if (['tagall', 'everyone', 'mentionall'].includes(command)) return sock.sendMessage(from, { text: (q ? `📢 ${q}\n\n` : '') + list, mentions: all }, { quoted: mek, noFont: true });
+    if (!hidden && c === 'all') return sock.sendMessage(from, { text: list, mentions: all }, { quoted: mek, noFont: true });
+    if (!hidden && (c === 'admin' || c === 'admins')) { const a = ps.filter((p) => p.admin).map((p) => p.id); return sock.sendMessage(from, { text: a.map((j) => `🛡️ @${num(j)}`).join('\n'), mentions: a }, { quoted: mek, noFont: true }); }
+    if (!hidden && c === 'notadmin') { const a = ps.filter((p) => !p.admin).map((p) => p.id); return sock.sendMessage(from, { text: a.map((j) => `👤 @${num(j)}`).join('\n'), mentions: a }, { quoted: mek, noFont: true }); }
     if (q || quoted?.text) return sock.sendMessage(from, { text: q || quoted.text, mentions: all }, { quoted: mek, noFont: true });
     return reply(usage(prefix, 'tag all | admin | notadmin | <text>'));
   });

@@ -5,7 +5,6 @@ const base = {
   OWNER_NAME: process.env.OWNER_NAME || 'Hajsajd',
   OWNER_NUMBER: (process.env.OWNER_NUMBER || '923489890758').replace(/\D/g, ''),
   PREFIX: process.env.PREFIX || '.',
-  VERSION: '2.0.0',
 
   REPO: process.env.REPO || '',
   SESSION_ID: process.env.SESSION_ID || '',
@@ -26,7 +25,7 @@ const base = {
 
 // ---- v3 extras (sab optional) ----
 Object.assign(base, {
-  VERSION: '3.5.0',
+  VERSION: '3.6.0',
   TIMEZONE: process.env.TIMEZONE || 'Asia/Karachi',
   MENU_IMAGE: process.env.MENU_IMAGE || '',        // menu ke saath image (direct URL)
   WARN_LIMIT: Number(process.env.WARN_LIMIT || 4),

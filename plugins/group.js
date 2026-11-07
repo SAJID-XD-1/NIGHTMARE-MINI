@@ -32,35 +32,6 @@ cmd({ pattern: 'admincheck', alias: ['checkadmin'], desc: 'Admin status check', 
     }, { quoted: mek });
   });
 
-cmd({ pattern: 'tagall', alias: ['everyone', 'mentionall'], desc: 'Sab members ko tag karein', category: 'group', admin: true, react: '📢' },
-  async (sock, mek, m, { from, q, getGroupMetadata }) => {
-    const g = await getGroupMetadata();
-    const ids = g.participants.map((p) => p.id);
-    const text = `📢 *${q || 'Attention everyone!'}*\n\n` + ids.map((id) => `🕷️ @${num(id)}`).join('\n');
-    await sock.sendMessage(from, { text, mentions: ids }, { quoted: mek, noFont: true });
-  });
-
-cmd({ pattern: 'hidetag', alias: ['h'], desc: 'Bina naam dikhaye sab ko tag (text / reply media)', category: 'group', admin: true, react: '🔊' },
-  async (sock, mek, m, { from, q, quoted, getGroupMetadata, reply, prefix }) => {
-    const mentions = (await getGroupMetadata()).participants.map((p) => p.id);
-    if (quoted) {
-      const media = await downloadFromMessage(quoted.message).catch(() => null);
-      if (media) {
-        const caption = q || media.content.caption || '';
-        const content = {
-          imageMessage: { image: media.buffer, caption, mentions },
-          videoMessage: { video: media.buffer, caption, mentions },
-          audioMessage: { audio: media.buffer, mimetype: 'audio/mp4', mentions },
-          stickerMessage: { sticker: media.buffer, mentions }
-        }[media.type];
-        if (content) return sock.sendMessage(from, content, { quoted: mek, noFont: true });
-      }
-      return sock.sendMessage(from, { text: q || quoted.text || '🕷️', mentions }, { quoted: mek, noFont: true });
-    }
-    if (!q) return reply(usage(prefix, 'hidetag Hello', 'Ya kisi message ko reply karein.'));
-    await sock.sendMessage(from, { text: q, mentions }, { quoted: mek, noFont: true });
-  });
-
 cmd({ pattern: 'kick', alias: ['remove', 'k'], desc: 'Member ko nikalein (mention/reply)', category: 'group', admin: true, botAdmin: true, react: '👢' },
   async (sock, mek, m, ctx) => {
     const jid = target(ctx);
@@ -155,8 +126,3 @@ cmd({ pattern: 'end', alias: ['endgc'], desc: 'Group khatam: sab ko nikalein (ow
     await ctx.reply(ok(`☠️ ${jids.length} members nikal diye.`));
   });
 
-cmd({ pattern: 'leave', alias: ['leavegc'], desc: 'Bot group chhod de (owner)', category: 'group', owner: true, group: true, react: '👋' },
-  async (sock, mek, m, ctx) => {
-    await ctx.reply(ok('👋 Allah hafiz! 🕷️'));
-    await sock.groupLeave(ctx.from);
-  });
