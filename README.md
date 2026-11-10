@@ -1,76 +1,31 @@
-# NIGHTMARE-MINI 🇦🇱🕷️ v3.6
-Developer: **SAJID ALI** • WhatsApp bot (Baileys) • MongoDB session • pairing website
 
-## Multi-number
-Ek hi app mein kai WhatsApp numbers pair ho sakte hain (pairing website par har number apna code leta hai).
-- Har number ka **alag data**: settings, prefix, SUDO, AFK, filters, warns, groups ki settings sab alag.
-- Har number ka owner wo number khud hai (purane bot ka owner wahi rehta hai jo pehle tha).
-- `MAX_SESSIONS` (default 5) limit rakhta hai. Har number ~50-80MB RAM leta hai, Basic dyno (512MB) par 5 theek hain.
-- `.logout confirm` us number ko unlink karke uska saara data delete kar deta hai.
-- `/api/sessions` connected numbers (masked) dikhata hai.
+<div align="center">
 
-## Update karne ka sahi tareeqa (zaroori)
-`unzip -o` purani files **delete nahi karta** - isi se plugins do baar chalte hain. Hamesha `update.sh` use karein (README ke neeche / chat mein diya gaya), jo pehle purani files hata kar naya code rakhta hai.
+<img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=900&size=42&duration=2500&pause=700&color=FF1744&center=true&vCenter=true&width=750&height=90&lines=NIGHTMARE+MINI+BOT;POWERED+BY+SAJID;ENTER+THE+DARK+SIDE" alt="NIGHTMARE MINI BOT"/>
 
-## Stability (v3.5)
-- WhatsApp ka 500 error aaye to session delete **nahi** hota, bot khud dobara connect karta hai (6 lagatar 500 par `needs-repair`: auth salamat, website se dobara pair).
-- Sirf asli logout (401) par session hatta hai.
-- Ek session ek waqt mein ek hi process chalata hai (MongoDB lock). Do app / local run same MONGODB_URI par ho to "Bad MAC" ka toofan aata hai - lock ye roakta hai.
-- Logs mein "Bad MAC" ke stack traces ginti ban kar ek line mein aate hain.
+<br>
 
-## AI keys
-Free keys: Groq (console.groq.com) ya Gemini (aistudio.google.com/apikey).
-- Is number ke liye: `.setkey groq <key>` • `.delkey groq` • `.keys` (har number ki apni key)
-- Sab numbers ke liye: Heroku Config Vars (`GROQ_API_KEY`, `GEMINI_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`)
-- `.gpt/.gemini/.groq` mein jis ki key nahi, wo maujood key wali AI se jawab dete hain.
+<img src="https://capsule-render.vercel.app/api?type=venom&height=220&color=0:080808,40:39000B,75:990018,100:080808&text=NIGHTMARE&fontColor=FF243F&fontSize=65&fontAlignY=50&stroke=FF1744&strokeWidth=1&animation=fadeIn&desc=MINI%20BOT%20%7C%20POWERED%20BY%20SAJID&descAlignY=72&descSize=17" width="100%" alt="NIGHTMARE 3D Red Banner"/>
 
-## Group status (.gcss)
-- Group mein: image/video/text ko reply karke `.gcss [caption]`
-- Inbox se: `.gcss list` -> `.gcss 3 [caption]` / `.gcss 1,4` / `.gcss all` (reply ke saath)
-- Iske liye Baileys 7.x chahiye (6.7.x mein "support nahi" ka message aata hai).
+<br>
 
-## Baileys 7.x test karna (alag test app par)
-```
-npm i @whiskeysockets/baileys@7.0.0-rc14 --save-exact
-npm pkg set engines.node=22.x
-```
-Phir bot mein `.diag` chalayein (inbox aur group dono mein) - Baileys version, LID, admin detection sab dikha deta hai.
+<img src="https://img.shields.io/badge/NIGHTMARE-MINI-990018?style=for-the-badge&labelColor=080808&color=990018"/>
+<img src="https://img.shields.io/badge/POWERED-BY%20SAJID?style=for-the-badge&labelColor=080808&color=4A0010"/>
 
-## Access
-Sirf **Owner** aur **SUDO** commands chala sakte hain (public/private mode nahi hai).
-- Owner = `OWNER_NUMBER` ya bot ka paired account
-- `.addsudo 923XXXXXXXXX` • `.delsudo 923XXXXXXXXX` • `.listsudo` (sirf Owner)
-- Group commands par group-admin check pehle ki tarah rehta hai
-- Anti-link, anti-word, AFK jaise watchers normal members par bhi chalte hain
+<br><br>
 
-## Font
-Har response par global NIGHTMARE font (`lib/font.js`, `lib/fontwrap.js`). User ka apna text, AI jawab, forward aur status exempt hain:
-`reply(text, { noFont: true })` ya `sock.sendMessage(jid, content, { noFont: true })`.
+### 🕷️ `BUILT IN DARKNESS. DEFINED BY POWER.`
 
-## Chalane ka tareeqa
-1. `npm install`  2. `.env.example` → `.env` (`MONGODB_URI`, `OWNER_NUMBER`)  3. `npm start` → `http://localhost:8000` → pairing code
+<img src="https://readme-typing-svg.demolab.com?font=Share+Tech+Mono&size=19&duration=2200&pause=600&color=E6002E&center=true&vCenter=true&width=600&height=45&lines=NOT+JUST+ANOTHER+BOT.;SIMPLE.+SHARP.+UNSTOPPABLE.;WELCOME+TO+NIGHTMARE." alt="Animated tagline"/>
 
-## Heroku
-Config Vars: `MONGODB_URI`, `OWNER_NUMBER` (+ optional `OWNER_NAME`, `PREFIX`, `TIMEZONE`, `SUDO`, `MENU_IMAGE`, AI keys). Dyno **Basic**.
-Session / settings / SUDO MongoDB mein save hote hain. Update: naye files GitHub par push → Deploy Branch.
+<br>
 
-## Naya plugin
-`plugins/_template.js` copy karein. Sirf `cmd()` / `onMessage()` (`../nightmare`) use karein.
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━━`
 
-## Commands
-- **ai** (7): `ai` `dall` `gemini` `gpt` `groq` `lydia` `or`
-- **download** (6): `apk` `fb` `igdl` `play` `tiktok` `video`
-- **fun** (4): `dice` `flip` `joke` `say`
-- **game** (1): `tictactoe`
-- **general** (9): `afk` `alive` `font` `help` `list` `menu` `owner` `ping` `runtime`
-- **group** (31): `acceptall` `add` `admincheck` `common` `demote` `end` `ginfo` `goodbye` `gpp` `groupinfo` `hidetag` `inactive` `invite` `join` `kick` `kickall` `leave` `msgs` `mute` `poll` `promote` `rejectall` `removeadmins` `requestlist` `reset` `revoke` `tag` `tagall` `timemute` `unmute` `welcome`
-- **media** (19): `avec` `avm` `bass` `black` `compress` `crop` `cut` `histo` `low` `merge` `mp3` `photo` `pitch` `reverse` `rotate` `treble` `trim` `vector` `voice`
-- **owner** (14): `addsudo` `autobio` `delschedule` `delsudo` `gcss` `getschedule` `gstatus` `listsudo` `restart` `save` `setschedule` `setstatus` `unblock` `vv`
-- **personal** (14): `delcmd` `delgreet` `filter` `getcmd` `getgreet` `gfilter` `gstop` `mention` `pfilter` `pstop` `setcmd` `setgreet` `stop` `tog`
-- **search** (2): `ison` `yts`
-- **security** (13): `amute` `antibad` `antifake` `antigm` `antigstatus` `antilink` `antimod` `antispam` `antiword` `aunmute` `pdm` `slink` `warn`
-- **settings** (9): `anticall` `antidelete` `autoread` `autorecording` `autostatuslike` `autostatusseen` `autotyping` `setprefix` `settings`
-- **sticker** (2): `attp` `sticker`
-- **tools** (14): `calc` `delbudget` `expense` `income` `online` `qr` `reminder` `screenshot` `summary` `task` `time` `trt` `tts` `weather`
-- **user** (7): `block` `fullpp` `gjid` `jid` `left` `pp` `whois`
-- **whatsapp** (9): `antiedit` `call` `clear` `delete` `dlt` `forward` `react` `read` `status`
+**🕸️ NIGHTMARE MINI BOT**
+
+*POWERED BY SAJID*
+
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━━`
+
+</div>
